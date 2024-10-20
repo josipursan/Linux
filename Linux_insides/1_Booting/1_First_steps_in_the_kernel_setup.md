@@ -22,7 +22,7 @@
 -memory management is completely redone in protected mode  
 -there are NO more 64Kb fixed-size segments  
 -size and location of each segment is described by an associated data structure called the **Segment descriptor**  
--segment descriptor are stored in a data structure called the **Global Descriptor Table** (GDT)  
+-segment descriptors are stored in a data structure called the **Global Descriptor Table** (GDT)  
   
 -GDT is a structure stored in memory, in a specific register called **GDTR**  
 -GDTR is a 48 bit register consisting of two parts : size of the global descriptor table (16-bits), and the address of the global descriptor table (32-bits)  
@@ -37,4 +37,13 @@
 &nbsp;&nbsp;&nbsp;-**TI** (table indicator) - indicates where to search for the descriptor; if 0, then search in GDT; if 1, then search in LDT (Local Descriptor Table)  
 &nbsp;&nbsp;&nbsp;-**RPL** - data indicating Privilege Level of the Requester (Requester's Privilege Level)  
   
-TO DO : *"The following steps are needed to get a physical address in protected mode:"*
+-to get a physical address in protected mode, segment selector must be loaded in one of the segment registers, the CPU will then try to find a segment descriptor at the offset `GDT address + Index` from the selector, and then  
+load the descriptor into the hidden part of the segment register  
+  
+-how do we go from real mode to protected mode?  
+&nbsp;&nbsp;&nbsp;-first we dissable interrupts  
+&nbsp;&nbsp;&nbsp;-then using `lgdt` instruction we load the GDT  
+&nbsp;&nbsp;&nbsp;-then we set the PE (Protection Enabled) bit in CR0 (Control Register 0)  
+&nbsp;&nbsp;&nbsp;-finally we jump to protected mode code section  
+  
+TO DO : Console initialization
